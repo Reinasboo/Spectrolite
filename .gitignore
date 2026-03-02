@@ -100,6 +100,10 @@ test-results/
 tmp/
 temp/
 
+# ── Helper scripts (CI / local tooling) ───────────────────────────────────────
+push_to_github.ps1
+write_readme.ps1
+
 # ── Jupyter ───────────────────────────────────────────────────────────────────
 .ipynb_checkpoints/
 *.ipynb
