@@ -14,6 +14,38 @@
 			"command": "powershell -ExecutionPolicy Bypass -File push_to_github.ps1",
 			"problemMatcher": [],
 			"group": "build"
+		},
+		{
+			"label": "git: verify status",
+			"type": "shell",
+			"command": "powershell -ExecutionPolicy Bypass -Command \"git -C 'C:\\Users\\Admin\\degenerate' status; git -C 'C:\\Users\\Admin\\degenerate' log --oneline -3; git -C 'C:\\Users\\Admin\\degenerate' remote -v\"",
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "write-readme",
+			"type": "shell",
+			"command": "powershell -ExecutionPolicy Bypass -File write_readme.ps1"
+		},
+		{
+			"label": "write-readme-2",
+			"type": "shell",
+			"command": "powershell -ExecutionPolicy Bypass -File C:\\Users\\Admin\\degenerate\\write_readme.ps1"
+		},
+		{
+			"label": "git: push docs update",
+			"type": "shell",
+			"command": "powershell -ExecutionPolicy Bypass -Command \"cd C:\\Users\\Admin\\degenerate; git add README.md; git rm --cached push_to_github.ps1 write_readme.ps1 2>$null; git add .gitignore; git commit -m 'docs: rewrite README for v2.0 — all 16 improvements documented'; git push origin main\""
+		},
+		{
+			"label": "git: push gitignore",
+			"type": "shell",
+			"command": "powershell -ExecutionPolicy Bypass -Command \"cd C:\\Users\\Admin\\degenerate; git add .gitignore; git commit -m 'chore: add helper scripts to .gitignore'; git push origin main\""
+		},
+		{
+			"label": "git: push update",
+			"type": "shell",
+			"command": "powershell -ExecutionPolicy Bypass -Command \"cd C:\\Users\\Admin\\degenerate; git add .vscode/tasks.json; git commit -m 'chore: clean up vscode tasks.json'; git push origin main\""
 		}
 	]
 }
