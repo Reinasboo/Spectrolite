@@ -1,0 +1,19 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "git: init and push to GitHub",
+			"type": "shell",
+			"command": "git init && git branch -M main && git remote add origin https://github.com/Reinasboo/Spectrolite.git && git add . && git commit -m \"feat: Spectrolite — Degenerate Gambit v2.0 initial release\\n\\nComplete autonomous AI trading agent for Solana / EVM meme-coin markets.\\n\\nCore architecture\\n- LangGraph-orchestrated OverseerAgent with full event loop\\n- Modular sub-agents: ChainAnalyst, SentimentEngine, SignalFusionEngine,\\n  ScamSlayer, WalletTracker, SwarmIntelligence, PositionManager, TradeExecutor\\n\\nSignal pipeline\\n- 3-model ensemble predictor: BiLSTM-Transformer (18 features) + XGBoost\\n  RegimeClassifier + IsolationForest AnomalyScorer with Brier-score weighting\\n- Adaptive signal weight learner (EMA, 9 sources, persisted to JSON)\\n- Persistent WebSocket firehose (pump.fun) with exponential backoff\\n- Redis pub/sub signal bus eliminating redundant API calls\\n- Telegram channel monitoring via Telethon MTProto + influencer follower-weight\\n- CLIP zero-shot meme-image classification (open_clip ViT-B-32)\\n\\nExecution\\n- Graduated 6-level trailing stop schedule (20% to 4%)\\n- Time-based theta-decay exit (20 min / +15% threshold)\\n- Kelly Criterion quarter-Kelly position sizing with 20-trade warm-up\\n- Dynamic priority fee estimation via MempoolMonitor (75th-pct, 30s cache)\\n- Re-entry engine: 25-35% dip bounce on partially-exited positions\\n- Shared httpx connection pool (HTTP/2, 50 connections) across all services\\n\\nScam shield\\n- Non-blocking Slither static analysis via run_in_executor\\n- Real-time LP liquidity watcher (DexScreener, 90s poll, 15% drop emergency exit)\\n- MEV bundle detection, honeypot simulation, social coordination scanner\\n\\nBacktest and research\\n- Historical backtester with realistic transaction cost model\\n  (inverse-sqrt-liquidity slippage, DEX fee, priority fee round-trip)\\n- Monte Carlo simulation\\n\\nInfrastructure\\n- Docker Compose stack: agent + Redis + Postgres + Prometheus\\n- Streamlit dashboard with Plotly charts\\n- Full pytest suite with asyncio support\\n- pyright-clean codebase\" && git push -u origin main",
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "git: push to GitHub",
+			"type": "shell",
+			"command": "powershell -ExecutionPolicy Bypass -File push_to_github.ps1",
+			"problemMatcher": [],
+			"group": "build"
+		}
+	]
+}

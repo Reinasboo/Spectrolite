@@ -1,0 +1,55 @@
+# ── Secrets ───────────────────────────────────────────────────
+.env
+*.pem
+*.key
+*.crt
+secrets/
+
+# ── Python artifacts ──────────────────────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+coverage.xml
+
+# ── Data / results ────────────────────────────────────────────
+results/
+data/
+*.db
+*.sqlite3
+*.csv
+
+# ── Models (rebuild inside container) ────────────────────────
+models/*.pt
+models/*.pth
+
+# ── Logs ─────────────────────────────────────────────────────
+logs/
+*.log
+
+# ── Git ──────────────────────────────────────────────────────
+.git/
+.gitignore
+.gitattributes
+
+# ── IDEs ─────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# ── Docs / misc ───────────────────────────────────────────────
+*.md
+docs/

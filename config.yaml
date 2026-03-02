@@ -1,0 +1,140 @@
+# config.yaml — Spectrolite / Degenerate Gambit Parameters
+# Agent: SPECTROLITE | Codename: Degenerate Gambit v2.0
+
+agent:
+  name: "SPECTROLITE"
+  codename: "Degenerate Gambit"
+  version: "2.0"
+  personality: "degen"          # options: degen | balanced | conservative
+  analysis_interval_seconds: 15
+  max_concurrent_positions: 5
+  heartbeat_interval_seconds: 240  # 4-minute session keepalive
+
+portfolio:
+  total_capital_usd: 10000
+  moonshot_allocation: 0.50
+  rotation_allocation: 0.30
+  arb_allocation: 0.15
+  iron_coffin_allocation: 0.05
+
+risk:
+  tolerance: "insane"           # options: moderate | high | insane
+  max_leverage: 10
+  default_leverage: 3
+  stop_loss_pct: 0.20
+  take_profit_targets: [2.0, 5.0, 10.0]
+  exit_pcts_at_targets: [0.30, 0.40, 0.30]
+  max_portfolio_drawdown: 0.80  # triggers SOBRIETY MODE
+  standard_entry_pct: 0.03      # 3% of Rotation Pool per standard trade
+  high_conviction_pct: 0.15     # 15% of Moonshot Reserve for meme_score >= 80
+
+signals:
+  min_meme_score: 65
+  moonshot_meme_score: 85
+  pump_probability_threshold: 0.72
+  min_wallet_consensus_pct: 0.65
+  mutation_probability: 0.15
+  mutation_size_range: [1.4, 2.0]
+  wallet_consensus_window_seconds: 300  # 5-minute window
+
+chains:
+  primary: "solana"
+  secondary: ["base", "bnb"]
+  arb_only: ["ethereum"]
+  min_arb_spread_pct: 0.04
+
+scam_shield:
+  max_scam_probability: 0.40    # auto-reject above this threshold
+  honeypot_sell_tax_threshold: 0.10
+  honeypot_simulation: true
+  static_analysis: true
+  social_scan_window_hours: 2
+  test_buy_amount_usd: 10       # simulated test buy before full entry
+  rug_warning_follower_threshold: 10000
+  blacklist_duration_hours: 48
+  mev_delay_range_seconds: [30, 90]
+
+meme_score:
+  base_themes:
+    dog: 20
+    frog: 18
+    cat: 15
+    ai: 12
+    political: 25
+  celebrity_confirmed: 50
+  celebrity_rumored: 20
+  visual_hype_max: 30
+  social_velocity_max: 20
+  narrative_alignment_max: 15
+  # Visual element bonuses
+  rocket: 8
+  moon: 10
+  lambo: 7
+  rug_penalty: -25
+  celebrity_face: 15
+
+wallet_tracking:
+  watchlist_size_min: 10
+  watchlist_size_max: 20
+  recency_weight_multiplier: 3
+  mutation_probability: 0.15
+  mutation_timing_advance_seconds: 30
+  jitter_range_seconds: [8, 45]
+  sub_wallet_count: [3, 5]
+
+notifications:
+  telegram_bot_token: "${TELEGRAM_BOT_TOKEN}"
+  telegram_chat_id: "${TELEGRAM_CHAT_ID}"
+  voice_alerts: true
+  meme_reports: true
+  sobriety_email: "${USER_EMAIL}"
+
+infrastructure:
+  vps_region: "us-east-1"
+  docker_replicas: 3
+  redis_url: "redis://localhost:6379"
+  database_url: "${DATABASE_URL}"
+  prometheus_port: 9090
+  grafana_port: 3000
+
+apis:
+  dexscreener_base_url: "https://api.dexscreener.com/latest"
+  birdeye_base_url: "https://public-api.birdeye.so"
+  jupiter_base_url: "https://quote-api.jup.ag/v6"
+  pumpfun_wss: "wss://pumpportal.fun/api/data"
+  nansen_base_url: "https://api.nansen.ai/v1"
+  bloxroute_ws: "wss://virginia.solana.dex.blxrbdn.com/ws"
+
+order_types:
+  instant_market_slippage: 0.03
+  twap_orders: 10               # split into 10 micro-orders
+  twap_duration_minutes: 22     # spread over 22 minutes
+  trailing_stop_initial: 0.20
+  trailing_stop_tightened: 0.08
+  trailing_stop_threshold_profit: 1.0  # tighten at 100% profit
+
+gamification:
+  levels:
+    - min_wins: 0
+      max_wins: 4
+      level: 1
+      max_leverage: 3
+      label: "Paper Hands Peasant"
+    - min_wins: 5
+      max_wins: 9
+      level: 2
+      max_leverage: 5
+      label: "Certified Degen"
+    - min_wins: 10
+      max_wins: 19
+      level: 3
+      max_leverage: 7
+      label: "Moon Math Specialist"
+    - min_wins: 20
+      max_wins: 9999
+      level: 4
+      max_leverage: 10
+      label: "Full Degen Transcendence"
+  level_reset_on_consecutive_losses: 3
+  casino_mode_win_streak: 5
+  win_streak_milestones: [5, 10, 20]

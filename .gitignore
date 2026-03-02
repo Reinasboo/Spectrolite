@@ -1,0 +1,109 @@
+# ── Python ────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.pyd
+*.pyo
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+wheels/
+sdist/
+var/
+lib/
+*.manifest
+*.spec
+pip-log.txt
+pip-delete-this-directory.txt
+.eggs/
+.installed.cfg
+MANIFEST
+
+# ── Virtual environments ───────────────────────────────────────────────────────
+.venv/
+venv/
+ENV/
+env/
+.env.local
+.env.*.local
+
+# ── Secrets / credentials ──────────────────────────────────────────────────────
+.env
+*.pem
+*.key
+*.p12
+*.pfx
+secrets/
+credentials/
+spectrolite_session.session
+spectrolite_session.session-journal
+
+# ── Model artefacts ───────────────────────────────────────────────────────────
+models/pump_predictor.pt
+models/signal_weights.json
+models/*.pt
+models/*.pkl
+models/*.joblib
+*.ckpt
+
+# ── Data / backtests ──────────────────────────────────────────────────────────
+data/
+results/
+*.parquet
+*.csv
+*.feather
+*.arrow
+
+# ── Logs ──────────────────────────────────────────────────────────────────────
+*.log
+logs/
+*.log.*
+
+# ── OS artefacts ──────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ── IDE ───────────────────────────────────────────────────────────────────────
+.vscode/settings.json
+.vscode/launch.json
+.idea/
+*.iml
+*.ipr
+*.iws
+.project
+.classpath
+.settings/
+
+# ── Type checking / linting ───────────────────────────────────────────────────
+.mypy_cache/
+.pyright/
+.ruff_cache/
+.pytype/
+
+# ── Test artefacts ────────────────────────────────────────────────────────────
+.pytest_cache/
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+junit.xml
+test-results/
+
+# ── Docker / temp ─────────────────────────────────────────────────────────────
+.docker/
+tmp/
+temp/
+
+# ── Jupyter ───────────────────────────────────────────────────────────────────
+.ipynb_checkpoints/
+*.ipynb
+
+# ── Playwright ────────────────────────────────────────────────────────────────
+playwright-report/
+test-results/

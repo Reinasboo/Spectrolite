@@ -1,0 +1,211 @@
+version: "3.9"
+
+# ============================================================
+# SPECTROLITE — Degenerate Gambit v2.0
+# docker-compose.yml
+# Usage: docker-compose up --scale chain-worker=3 --scale sentiment-scout=2
+# ============================================================
+
+x-common-env: &common-env
+  env_file: .env
+  environment:
+    - PYTHONUNBUFFERED=1
+    - PYTHONDONTWRITEBYTECODE=1
+
+x-agent-deploy: &agent-deploy
+  restart_policy:
+    condition: on-failure
+    delay: 5s
+    max_attempts: 3
+
+services:
+
+  # ── Overseer (singleton) ──────────────────────────────────
+  overseer:
+    build:
+      context: .
+      target: runtime
+    image: spectrolite:latest
+    container_name: degen_overseer
+    <<: *common-env
+    command: python -m degenerate_gambit run --mode overseer
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - agent_results:/app/results
+      - agent_models:/app/models
+      - agent_logs:/app/logs
+    deploy:
+      <<: *agent-deploy
+      replicas: 1
+    networks:
+      - degen_net
+    healthcheck:
+      test: ["CMD", "python", "-c", "import redis, os; redis.Redis.from_url(os.getenv('REDIS_URL','redis://redis:6379')).ping()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ── Chain Workers (scale to 3) ────────────────────────────
+  chain-worker:
+    build:
+      context: .
+      target: runtime
+    image: spectrolite:latest
+    <<: *common-env
+    command: python -m degenerate_gambit run --mode chain-worker
+    depends_on:
+      - overseer
+    volumes:
+      - agent_results:/app/results
+      - agent_logs:/app/logs
+    deploy:
+      <<: *agent-deploy
+      replicas: 3
+    networks:
+      - degen_net
+
+  # ── Sentiment Scouts (scale to 2) ────────────────────────
+  sentiment-scout:
+    build:
+      context: .
+      target: runtime
+    image: spectrolite:latest
+    <<: *common-env
+    command: python -m degenerate_gambit run --mode sentiment-scout
+    depends_on:
+      - overseer
+    volumes:
+      - agent_results:/app/results
+      - agent_logs:/app/logs
+    deploy:
+      <<: *agent-deploy
+      replicas: 2
+    networks:
+      - degen_net
+
+  # ── Streamlit Dashboard ───────────────────────────────────
+  dashboard:
+    build:
+      context: .
+      target: runtime
+    image: spectrolite:latest
+    container_name: degen_dashboard
+    <<: *common-env
+    command: streamlit run dashboard/app.py --server.port 8501 --server.address 0.0.0.0 --server.headless true
+    ports:
+      - "8501:8501"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - agent_results:/app/results
+    networks:
+      - degen_net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/_stcore/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ── PostgreSQL ────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: degen_postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-spectrolite}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-degenpassword}
+      POSTGRES_DB: ${POSTGRES_DB:-degenerate_gambit}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - degen_net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-spectrolite} -d ${POSTGRES_DB:-degenerate_gambit}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Redis ─────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: degen_redis
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-degenredis}
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - degen_net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "--no-auth-warning", "-a", "${REDIS_PASSWORD:-degenredis}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Prometheus ────────────────────────────────────────────
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: degen_prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.enable-lifecycle"
+      - "--storage.tsdb.retention.time=15d"
+    volumes:
+      - ./docker/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - degen_net
+    restart: unless-stopped
+
+  # ── Grafana ───────────────────────────────────────────────
+  grafana:
+    image: grafana/grafana:latest
+    container_name: degen_grafana
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-degenadmin}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_INSTALL_PLUGINS: "grafana-clock-panel,grafana-simple-json-datasource"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./docker/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./docker/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+    networks:
+      - degen_net
+    restart: unless-stopped
+
+# ── Volumes ───────────────────────────────────────────────────
+volumes:
+  postgres_data:
+  redis_data:
+  prometheus_data:
+  grafana_data:
+  agent_results:
+  agent_models:
+  agent_logs:
+
+# ── Networks ──────────────────────────────────────────────────
+networks:
+  degen_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16

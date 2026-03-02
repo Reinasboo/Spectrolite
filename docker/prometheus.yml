@@ -1,0 +1,68 @@
+# ============================================================
+# Prometheus scrape config — Degenerate Gambit v2.0
+# ============================================================
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    project: spectrolite
+    codename: degenerate_gambit
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: []
+
+rule_files: []
+
+scrape_configs:
+
+  # ── Overseer Agent ─────────────────────────────────────────
+  - job_name: "overseer"
+    static_configs:
+      - targets: ["overseer:8000"]
+    metrics_path: /metrics
+    scrape_interval: 15s
+
+  # ── Chain Workers ──────────────────────────────────────────
+  - job_name: "chain-worker"
+    dns_sd_configs:
+      - names: ["tasks.chain-worker"]
+        type: A
+        port: 8000
+    metrics_path: /metrics
+    scrape_interval: 15s
+
+  # ── Sentiment Scouts ───────────────────────────────────────
+  - job_name: "sentiment-scout"
+    dns_sd_configs:
+      - names: ["tasks.sentiment-scout"]
+        type: A
+        port: 8000
+    metrics_path: /metrics
+    scrape_interval: 15s
+
+  # ── Dashboard ──────────────────────────────────────────────
+  - job_name: "dashboard"
+    static_configs:
+      - targets: ["dashboard:8501"]
+    metrics_path: /metrics
+    scrape_interval: 30s
+
+  # ── Prometheus self-scrape ──────────────────────────────────
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  # ── Redis ──────────────────────────────────────────────────
+  - job_name: "redis"
+    static_configs:
+      - targets: ["redis:6379"]
+    scrape_interval: 30s
+
+  # ── PostgreSQL ─────────────────────────────────────────────
+  - job_name: "postgres"
+    static_configs:
+      - targets: ["postgres:5432"]
+    scrape_interval: 30s

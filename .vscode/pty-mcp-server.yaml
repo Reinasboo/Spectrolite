@@ -1,0 +1,51 @@
+logDir : 'c:\Users\Admin\degenerate\.vscode\pty-mcp-server\logs'
+logLevel : 'Debug'
+toolsDir: 'c:\Users\Admin\degenerate\.vscode\pty-mcp-server\tools'
+promptsDir: 'c:\Users\Admin\degenerate\.vscode\pty-mcp-server\prompts'
+resourcesDir: 'c:\Users\Admin\degenerate\.vscode\pty-mcp-server\resources'
+sandboxDir : 'c:\Users\Admin\degenerate\.vscode\pty-mcp-server\sandbox'
+prompts:
+  - '>>>'
+  - '...'
+  - ']#'
+  - ']$'
+  - ')?'
+  - 'Password:'
+  - 'password:'
+  - 'ghci>'
+  - '--More--'
+  - '(END)'
+invalidChars:
+  - '&&'
+  - '||'
+  - '..'
+invalidCmds:
+  - del
+  - erase
+  - rmdir
+  - rm
+  - format
+  - kill
+  - taskkill
+  - su
+  - sudo
+  - restart
+  - reboot
+  - shutdown
+  
+
+# not yet implemented parameters.
+environment:
+  ProgramData: "C:\ProgramData"
+  SystemRoot: "C:\Windows"
+timeoutMicrosec: 1000000
+sandboxNW : "192.168.0.0/24"
+serial:
+  device: "COM3"
+  commSpeed: 9600
+  bitsPerWord: 8
+  stopb: 1
+  parity: "NoParity"
+  flowControl: "NoFlowControl"
+  timeout: 1
+
